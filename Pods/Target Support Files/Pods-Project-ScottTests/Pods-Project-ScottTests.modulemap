@@ -1,0 +1,6 @@
+framework module Pods_Project_ScottTests {
+  umbrella header "Pods-Project-ScottTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
