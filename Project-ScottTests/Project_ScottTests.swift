@@ -12,15 +12,39 @@ import Quick
 import Nimble
 import Project_Scott
 
-class Project_ScottTests: QuickSpec {
+class Project_ScottTests: QuickSpec, DataReturnDelegate {
+    
+    var error: String?
+    var data: NSData?
+    
     override func spec() {
         describe("Connection") {
             
-            it("Connects to websites"){
+            it("It has an error when the url is bad"){
                 
+                var conn = Connection(url: "http://hidden-earth-7822.herokuapp.garbage", delegate: self)
+                conn.getData()
+                expect(self.error).toEventuallyNot(beNil(), timeout: NSTimeInterval(10), pollInterval: NSTimeInterval(0.5))
             }
             
+            it("It gets data from websites"){
+                
+                var conn = Connection(url: "http://hidden-earth-7822.herokuapp.com/display_rooms.json", delegate: self)
+                conn.getData()
+                expect(self.data).toEventuallyNot(beNil(), timeout: NSTimeInterval(10), pollInterval: NSTimeInterval(0.5))
+            }
         }
+        
+        describe("Room"){
+            it("parses json data"){
+                var json = JSON(data: self.data!)
+                expect(Room(json: json[0])).toNot(raiseException())
+            }
+        }
+    }
+    func gotData(data: NSData?, error: String?) {
+        self.data = data
+        self.error = error
     }
     
 }

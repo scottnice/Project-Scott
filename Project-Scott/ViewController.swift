@@ -15,6 +15,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var output: UILabel!
     @IBOutlet var tableView: UITableView!
     
+    @IBAction func GetEmptyRoomData(sender: UIButton){
+        let date = NSDate()
+        let calendar = NSCalendar.currentCalendar()
+        let components = calendar.components(.CalendarUnitHour | .CalendarUnitMinute | .CalendarUnitWeekday, fromDate: date)
+        let hour = components.hour
+        let minutes = components.minute
+        let day = components.weekday - 1
+        
+        var conn = Connection(url: "http://hidden-earth-7822.herokuapp.com/find_empty_rooms/\(day)/\(hour):\(minutes):00.json", delegate: self)
+        println("http://hidden-earth-7822.herokuapp.com/find_empty_rooms/\(day)/\(hour):\(minutes):00.json")
+        conn.getData()
+    }
+    
     @IBAction func GetRoomData(sender: UIButton) {
         var conn = Connection(url: "http://hidden-earth-7822.herokuapp.com/display_rooms.json", delegate: self)
         conn.getData()

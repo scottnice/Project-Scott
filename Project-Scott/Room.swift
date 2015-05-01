@@ -12,14 +12,31 @@ class Room{
     private var timeslots: [Timeslot]
     private var name: String
     
+    class func parseJsonToArray(json: JSON) -> [Room]{
+        var roomList = [Room]()
+        for (index, roomDict) in json {
+            roomList.append(Room(json: roomDict))
+        }
+        return roomList
+    }
+    
     init(name: String){
         self.name = name
         timeslots = [Timeslot]()
     }
     
-    init(json: JSON){
-        name = json["name"].string!
+    convenience init(json: JSON){
+        self.init(name: "")
+        var name = json["name"].string
+        
+        if name == nil{
+            var error = NSError()
+            NSException.raise("Exception", format:"Error: %@", arguments:getVaList([error]))
+        }
+        
+        self.name = json["name"].string!
         timeslots = Timeslot.parseJsonToArray(json)
+         
     }
     
     func addTimeSlot(timeslot: Timeslot){
@@ -32,14 +49,6 @@ class Room{
     
     func getTimeslots() -> [Timeslot]{
         return timeslots
-    }
-    
-    static func parseJsonToArray(json: JSON) -> [Room]{
-        var roomList = [Room]()
-        for (index, roomDict) in json {
-            roomList.append(Room(json: roomDict))
-        }
-        return roomList
     }
     
     func getTimeslotsCount() -> Int{
